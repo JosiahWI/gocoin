@@ -9,12 +9,12 @@ import (
 
 const sdRoomID = "!VYobXAAxPBwDxtamiQ:matrix.org"
 
-type MautrixClient interface {
+type GocoinClient interface {
 	SendText(id.RoomID, string) (*mautrix.RespSendEvent, error)
 }
 
-func RegisterBalanceCommand(client MautrixClient) {
-	client.SendText(sdRoomID, "0")
+func RegisterBalanceCommand(client GocoinClient, roomID id.RoomID) {
+	client.SendText(roomID, "0")
 }
 
 func login(config *Config) (*mautrix.Client, error) {
@@ -54,5 +54,5 @@ func main() {
 		os.Exit(0)
 	}
 
-	RegisterBalanceCommand(client)
+	RegisterBalanceCommand(client, sdRoomID)
 }

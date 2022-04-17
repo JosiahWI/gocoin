@@ -31,11 +31,11 @@ func parseArgs() (*Config, error) {
 		return nil, ErrMissingArg("password empty")
 	}
 
-	config := Config{
+	config := &Config{
 		homeserver: homeserver,
 		username:   username,
 		password:   password,
 	}
 
-	return &config, nil
+	return config, nil
 }
