@@ -8,6 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	mautrix "maunium.net/go/mautrix"
 	id "maunium.net/go/mautrix/id"
 )
 
@@ -35,9 +36,12 @@ func (m *MockMautrixClient) EXPECT() *MockMautrixClientMockRecorder {
 }
 
 // SendText mocks base method.
-func (m *MockMautrixClient) SendText(arg0 id.RoomID, arg1 string) {
+func (m *MockMautrixClient) SendText(arg0 id.RoomID, arg1 string) (*mautrix.RespSendEvent, error) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "SendText", arg0, arg1)
+	ret := m.ctrl.Call(m, "SendText", arg0, arg1)
+	ret0, _ := ret[0].(*mautrix.RespSendEvent)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // SendText indicates an expected call of SendText.
