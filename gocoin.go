@@ -4,6 +4,7 @@ import (
 	"maunium.net/go/mautrix"
 	"maunium.net/go/mautrix/event"
 	"maunium.net/go/mautrix/id"
+	"strings"
 )
 
 type Sender interface {
@@ -19,7 +20,8 @@ func (bot *GocoinBot) GetID() id.UserID {
 }
 
 func (bot *GocoinBot) HandleMessage(s Sender, matrixEvent event.Event) {
-	if bot.GetID() != matrixEvent.Sender {
+	content := matrixEvent.Content.Parsed.(*event.MessageEventContent).Body
+	if bot.GetID() != matrixEvent.Sender && strings.HasPrefix(content, "g!bal") {
 		s.SendText(matrixEvent.RoomID, "0")
 	}
 }
