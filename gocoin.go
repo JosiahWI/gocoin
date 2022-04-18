@@ -3,18 +3,22 @@ package main
 import (
 	"log"
 	"maunium.net/go/mautrix"
+	"maunium.net/go/mautrix/event"
 	"maunium.net/go/mautrix/id"
 	"os"
 )
 
 const sdRoomID = "!VYobXAAxPBwDxtamiQ:matrix.org"
 
-type GocoinClient interface {
+type Sender interface {
 	SendText(id.RoomID, string) (*mautrix.RespSendEvent, error)
 }
 
-func RegisterBalanceCommand(client GocoinClient, roomID id.RoomID) {
-	client.SendText(roomID, "0")
+type GocoinBot struct {
+}
+
+func (bot *GocoinBot) balance(s Sender, matrixEvent event.Event) {
+	s.SendText(matrixEvent.RoomID, "0")
 }
 
 func login(config *Config) (*mautrix.Client, error) {
@@ -54,5 +58,15 @@ func main() {
 		os.Exit(0)
 	}
 
-	RegisterBalanceCommand(client, sdRoomID)
+	bot := GocoinBot{}
+
+	syncer := client.Syncer.(*mautrix.DefaultSyncer)
+	syncer.OnEventType(event.EventMessage, func(source mautrix.EventSource, matrixEvent *event.Event) {
+		bot.balance(client, *matrixEvent)
+	})
+
+	err = client.Sync()
+	if err != nil {
+		log.Println(err)
+	}
 }
